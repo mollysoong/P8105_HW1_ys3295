@@ -1,0 +1,86 @@
+---
+title: "Homework 1"
+author: "Yan Song"
+output: github_document
+---
+
+This is my solution to HW1.
+
+```{r setup, include FALSE}
+library(tidyverse)
+```
+
+
+## Problem 1
+
+Create a data frame with the specified elements. 
+
+```{r create_df}
+prob1_df = 
+  tibble(
+    samp = rnorm(10),
+    samp_gt_0 = samp > 0,
+    char_vec = c("a", "b", "c", "d", "e", "f", "g", "h", "i", "j"),
+    factor_vec = factor(c("low", "low", "low", "mod", "mod", "mod", "mod", "high", "high", "high"))
+  )
+```
+
+Take the mean of each variable in my data frame.
+
+```{r mean_pull_var}
+mean(pull(prob1_df, samp))
+mean(pull(prob1_df, samp_gt_0))
+mean(pull(prob1_df, char_vec))
+mean(pull(prob1_df, factor_vec))
+```
+
+We can take the mean of numbers and logical but not character or factor. 
+
+```{r try_numeric}
+as.numeric(pull(prob1_df, samp))
+as.numeric(pull(prob1_df, samp_gt_0))
+as.numeric(pull(prob1_df, char_vec))
+as.numeric(pull(prob1_df, factor_vec))
+```
+
+```{r}
+as.numeric(pull(prob1_df, samp_gt_0)) * pull(prob1_df, samp)
+```
+
+## Problem 2
+
+First, we load the _penguins_ dataset:
+
+```{r}
+
+data("penguins", package = "palmerpenguins")
+
+```
+
+The data was collected on the islands includes `r unique(penguins$island)` in the following years: `r unique(penguins$year)` and the species includes `r unique(penguins$species)`. The dataset includes the following variables: `r ls(penguins)` with `r nrow(penguins)` rows and `r ncol(penguins)` columns.
+
+* The penguin with the longest bill length is a Gentoo penguin from Biscoe Island with a bill length of `r max(pull(penguins,bill_length_mm), na.rm = TRUE) `mm while the the penguin with shortest bill length is an Adelie penguin from Dream Island with a bill length of `r min(pull(penguins,bill_length_mm), na.rm = TRUE) `mm. The mean bill length for all penguins in the dataset is `r round(mean(pull(penguins,bill_length_mm), na.rm = TRUE), digits = 2)` mm with the standard deviation of `r round(sd(pull(penguins,bill_length_mm), na.rm = TRUE), digits = 2)` mm. 
+
+* The penguin with the maximum and minimum bill depth are an Adelie penguin form Torgersen Island and a Gentoo penguin from Biscoe Island with the bill depths of `r max(pull(penguins,bill_depth_mm), na.rm = TRUE) `mm and `r min(pull(penguins,bill_depth_mm), na.rm = TRUE) `mm respectively. The mean bill depth for all penguins in the dataset is `r round(mean(pull(penguins,bill_depth_mm), na.rm = TRUE), digits = 2)` mm with the standard deviation of `r round(sd(pull(penguins,bill_depth_mm), na.rm = TRUE), digits = 2)` mm. 
+
+* The penguin with the longest flipper length is a Gentoo penguin from Biscoe Island with a flipper length of `r max(pull(penguins,flipper_length_mm), na.rm = TRUE) `mm while the the penguin with shortest flipper length is an Adelie penguin from Biscoe Island with a bill length of `r min(pull(penguins,flipper_length_mm), na.rm = TRUE) `mm. The mean flipper length for all penguins in the dataset is `r round(mean(pull(penguins, flipper_length_mm), na.rm = TRUE), digits = 2)` mm with the standard deviation of `r round(sd(pull(penguins, flipper_length_mm), na.rm = TRUE), digits = 2)` mm. 
+
+* The heaviest penguin is a Gentoo penguin from Biscoe Island with a mass of `r max(pull(penguins, body_mass_g), na.rm = TRUE) `g while the lightest penguin is a Chinstrap penguin from Dream Island with a bill length of `r min(pull(penguins,body_mass_g), na.rm = TRUE) `g. The mean body mass of all penguins in the dataset is `r round(mean(pull(penguins, body_mass_g), na.rm = TRUE), digits = 2)` g with the standard deviation of `r round(sd(pull(penguins,  body_mass_g), na.rm = TRUE), digits = 2)` g. 
+
+Next we show a scatterplot of flipper_length_mm (y) vs bill_length_mm (x):
+
+```{r warning=FALSE, message=FALSE}
+
+ggplot(data=penguins,
+       aes(x = bill_length_mm,
+           y = flipper_length_mm,
+           color = species)) + geom_point()
+
+```
+
+Finally we save the code to the file:
+```{r warning=FALSE, message=FALSE}
+
+ggsave("penguins_scatter_plot.pdf", height = 4, width = 6)
+
+```
